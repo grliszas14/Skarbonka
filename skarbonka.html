@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pl">
+	<head>
+		<title>Skarbonka Newterm</title>
+		<meta charset="utf-8" />
+
+		<style>
+			.container{overflow: hidden}
+			.tab{float: left; margin-left: 100px}
+			.tab-2{float: right; margin-left: 50px; margin-right: 50px; position: fixed; right: 50px}
+			.tab-2 input{display: block; margin-bottom: 20px}
+			tr{transition:all .25s ease-in-out}
+			tr:hover{background-color: #EEE; cursor: pointer}
+			.header img{display: block; margin-left: auto; margin-right: auto; margin-bottom: 50px; width: 500px}
+			.sum {float: left; margin-left: 50px}
+		</style>
+
+	</head>
+	<body>
+
+		<div class="header">
+			<img src="img/newterm-skarbonka.png" />
+		</div>
+
+		<div class="container">
+			<div class="tab tab-1">
+				<table id="table" border="1">
+					<tr>
+						<th>Data</th>
+						<th>Na co</th>
+						<th>Kto</th>
+						<th>Ile [zł]</th>
+					</tr>
+					<tr>
+						<td>30.09.2017</td>
+						<td>Jakiś przekaźnik co przyszedł dziś</td>
+						<td>gwojciech</td>
+						<td>5</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="sum">
+				<h2>Stan skarbonki: </h2>
+				<label for="actualFinances" id="moneyBoxCondition">0 zł</label>
+			</div>
+
+			<div class="tab tab-2">
+				Data :<input type="text" name="fdate" id="fdate">
+				Na co : <input type="text" name="fitem" id="fitem">
+				Kto :<input type="text" name="fwho" id="fwho">
+				Ile : <input type="number" name="fhowmuch" id="fhowmuch">
+
+				<button onclick="addHTMLTableRow();">Dodaj</button>
+				<button onclick="editHTMLTableSelectedRow()">Edytuj</button>
+				<button onclick="removeSelectedRow()">Usuń</button>
+			</div>
+
+		</div>
+
+		<script>
+			var rIndex,
+				table = document.getElementById("table");
+
+			// check the empty input
+			function checkEmptyInput() {
+				var isEmpty = false,
+					fdate = document.getElementById("fdate").value,
+					fitem = document.getElementById("fitem").value,
+					fwho = document.getElementById("fwho").value,
+					fhowmuch = document.getElementById("fhowmuch").value;
+
+				if (fdate === "") {
+					alert("Data nie może być pusta !");
+					isEmpty = true;
+				}
+				if (fitem === "") {
+					alert("Wpisz na co poszła kasa ! ;-)");
+					isEmpty = true;
+				}
+				if (fwho === "") {
+					alert("Anonim ? ");
+					isEmpty = true;
+				}
+				if (fhowmuch === "") {
+					alert("Zapisz ile to kosztowało !");
+					isEmpty = true;
+				}
+				return isEmpty;
+			}
+
+			// create new row and cells
+			// get values from input text
+			// set values into row cell's
+			function addHTMLTableRow() {
+				if (!checkEmptyInput()) {
+					var	newRow = table.insertRow(table.length),
+						cellDate = newRow.insertCell(0),
+						cellItem = newRow.insertCell(1),
+						cellWho = newRow.insertCell(2),
+						cellHowMuch = newRow.insertCell(3),
+						fdate = document.getElementById("fdate").value,
+						fitem = document.getElementById("fitem").value,
+						fwho = document.getElementById("fwho").value,
+						fhowmuch = document.getElementById("fhowmuch").value;
+
+					cellDate.innerHTML = fdate;
+					cellItem.innerHTML = fitem;
+					cellWho.innerHTML = fwho;
+					cellHowMuch.innerHTML = fhowmuch;
+
+					// call the function to set the event to the new row
+					selectedRowToInput();
+				}
+			}
+
+			// display selected row data into input text
+			function selectedRowToInput() {
+
+				for (var i = 1; i < table.rows.length; i++) {
+					table.rows[i].onclick = function() {
+						// get the selected row index
+						rIndex = this.rowIndex;
+						document.getElementById("fdate").value = this.cells[0].innerHTML;
+						document.getElementById("fitem").value = this.cells[1].innerHTML;
+						document.getElementById("fwho").value = this.cells[2].innerHTML;
+						document.getElementById("fhowmuch").value = this.cells[3].innerHTML;
+					};
+				}
+			}
+			selectedRowToInput();
+
+			function editHTMLTableSelectedRow() {
+				var fdate = document.getElementById("fdate").value,
+					fitem = document.getElementById("fitem").value,
+					fwho = document.getElementById("fwho").value,
+					fhowmuch = document.getElementById("fhowmuch").value;
+
+				if (!checkEmptyInput()) {
+					table.rows[rIndex].cells[0].innerHTML = fdate;
+					table.rows[rIndex].cells[1].innerHTML = fitem;
+					table.rows[rIndex].cells[2].innerHTML = fwho;
+					table.rows[rIndex].cells[3].innerHTML = fhowmuch;
+				}
+			}
+
+			function removeSelectedRow() {
+				table.deleteRow(rIndex);
+				// clear input text
+				document.getElementById("fdate").value = "";
+				document.getElementById("fitem").value = "";
+				document.getElementById("fwho").value = "";
+				document.getElementById("fhowmuch").value = "";
+			}
+
+			if(table) table.onclick = function(e) {
+				var target = (e || window.event).target;
+				if (target.tagName in {TD:1, TH:1})
+					target.setAttribute('style', 'background-color: #F00');
+			};
+		</script>
+	</body>
+</html>

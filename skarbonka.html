@@ -3,6 +3,8 @@
 	<head>
 		<title>Skarbonka Newterm</title>
 		<meta charset="utf-8" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="js/scripts.js"></script>
 
 		<style>
 			.container{overflow: hidden}
@@ -10,9 +12,10 @@
 			.tab-2{float: right; margin-left: 50px; margin-right: 50px; position: fixed; right: 50px}
 			.tab-2 input{display: block; margin-bottom: 20px}
 			tr{transition:all .25s ease-in-out}
-			tr:hover{background-color: #EEE; cursor: pointer}
+			tr:hover{background-color: #a1a0a3; cursor: pointer}
 			.header img{display: block; margin-left: auto; margin-right: auto; margin-bottom: 50px; width: 500px}
-			.sum {float: left; margin-left: 50px}
+			.sum {float: left; margin-left: 50px; position: fixed; right: 450px}
+			.selected {background-color: #ff7178;}
 		</style>
 
 	</head>
@@ -42,8 +45,9 @@
 
 			<div class="sum">
 				<h2>Stan skarbonki: </h2>
-				<label for="actualFinances" id="moneyBoxCondition">0 zł</label>
+				<span id="moneyBoxCondition">0 zł</span>
 			</div>
+
 
 			<div class="tab tab-2">
 				Data :<input type="text" name="fdate" id="fdate">
@@ -111,6 +115,7 @@
 
 					// call the function to set the event to the new row
 					selectedRowToInput();
+					calculateActualMoneyBoxState();
 				}
 			}
 
@@ -118,13 +123,21 @@
 			function selectedRowToInput() {
 
 				for (var i = 1; i < table.rows.length; i++) {
+
 					table.rows[i].onclick = function() {
+
+						if(typeof rIndex !== "undefined") {
+							table.rows[rIndex].classList.toggle("selected");
+						}
 						// get the selected row index
 						rIndex = this.rowIndex;
 						document.getElementById("fdate").value = this.cells[0].innerHTML;
 						document.getElementById("fitem").value = this.cells[1].innerHTML;
 						document.getElementById("fwho").value = this.cells[2].innerHTML;
 						document.getElementById("fhowmuch").value = this.cells[3].innerHTML;
+
+						this.classList.toggle("selected");
+
 					};
 				}
 			}
@@ -142,6 +155,7 @@
 					table.rows[rIndex].cells[2].innerHTML = fwho;
 					table.rows[rIndex].cells[3].innerHTML = fhowmuch;
 				}
+				calculateActualMoneyBoxState();
 			}
 
 			function removeSelectedRow() {
@@ -151,13 +165,21 @@
 				document.getElementById("fitem").value = "";
 				document.getElementById("fwho").value = "";
 				document.getElementById("fhowmuch").value = "";
+
+				calculateActualMoneyBoxState();
 			}
 
-			if(table) table.onclick = function(e) {
-				var target = (e || window.event).target;
-				if (target.tagName in {TD:1, TH:1})
-					target.setAttribute('style', 'background-color: #F00');
-			};
+			function calculateActualMoneyBoxState() {
+
+				var sumVar = 0;
+				for (var i = 1; i < table.rows.length; i++) {
+					sumVar = sumVar + parseInt(table.rows[i].cells[3].innerHTML);
+				}
+
+				console.log("Sum = " + sumVar);
+				document.getElementById("moneyBoxCondition").innerHTML = sumVar+" zł";
+			}
+			calculateActualMoneyBoxState();
 		</script>
 	</body>
 </html>

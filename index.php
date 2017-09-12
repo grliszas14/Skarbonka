@@ -22,7 +22,7 @@
 	<body>
 
 		<div class="header">
-			<img src="img/newterm-skarbonka.png" />
+			<img src="public/images/skarbonka.png" />
 		</div>
 
 		<div class="container">
@@ -34,12 +34,6 @@
 						<th>Kto</th>
 						<th>Ile [zł]</th>
 					</tr>
-					<tr>
-						<td>30.09.2017</td>
-						<td>Jakiś przekaźnik co przyszedł dziś</td>
-						<td>gwojciech</td>
-						<td>5</td>
-					</tr>
 				</table>
 			</div>
 
@@ -50,14 +44,18 @@
 
 
 			<div class="tab tab-2">
-				Data :<input type="text" name="fdate" id="fdate">
-				Na co : <input type="text" name="fitem" id="fitem">
-				Kto :<input type="text" name="fwho" id="fwho">
-				Ile : <input type="number" name="fhowmuch" id="fhowmuch">
+				<form action="add.php" method="post">
+					Data (yyyy-mm-dd):<input type="text" name="fdate" id="fdate">
+					Na co : <input type="text" name="fitem" id="fitem">
+					Kto :<input type="text" name="fwho" id="fwho">
+					Ile : <input type="text" name="fhowmuch" id="fhowmuch">
 
-				<button onclick="addHTMLTableRow();">Dodaj</button>
-				<button onclick="editHTMLTableSelectedRow()">Edytuj</button>
-				<button onclick="removeSelectedRow()">Usuń</button>
+					<input onclick="addHTMLTableRow();" type="submit" value="Dodaj" name="add"/>
+					<input onclick="editHTMLTableSelectedRow()" type="submit" value="Edytuj" name="edit"/>
+					<!--
+					<input onclick="removeSelectedRow()" type="submit" value="Usuń"/>
+					-->
+				</form>
 			</div>
 
 		</div>
@@ -119,6 +117,26 @@
 				}
 			}
 
+			function addHTMLTableRowPhp(data, na_co, kto, ile) {
+					var	newRow = table.insertRow(table.length),
+						cellDate = newRow.insertCell(0),
+						cellItem = newRow.insertCell(1),
+						cellWho = newRow.insertCell(2),
+						cellHowMuch = newRow.insertCell(3),
+						fdate = data,
+						fitem = na_co,
+						fwho = kto,
+						fhowmuch = ile;
+
+					cellDate.innerHTML = fdate;
+					cellItem.innerHTML = fitem;
+					cellWho.innerHTML = fwho;
+					cellHowMuch.innerHTML = fhowmuch;
+
+					// call the function to set the event to the new row
+					selectedRowToInput();
+					calculateActualMoneyBoxState();
+			}
 			// display selected row data into input text
 			function selectedRowToInput() {
 
@@ -140,7 +158,7 @@
 
 					};
 				}
-				exportTableToCSV('092017.csv');
+				//exportTableToCSV('092017.csv');
 			}
 			selectedRowToInput();
 
@@ -174,12 +192,13 @@
 
 				var sumVar = 0;
 				for (var i = 1; i < table.rows.length; i++) {
-					sumVar = sumVar + parseInt(table.rows[i].cells[3].innerHTML);
+					sumVar = sumVar + parseFloat(table.rows[i].cells[3].innerHTML);
 				}
 
-				console.log("Sum = " + sumVar);
+				sumVar = sumVar.toFixed(2);
 				document.getElementById("moneyBoxCondition").innerHTML = sumVar+" zł";
 			}
+
 			calculateActualMoneyBoxState();
 
 			function downloadCSV(csv, filename) {
@@ -200,7 +219,7 @@
 
 			function exportTableToCSV(filename) {
 				var csv = [];
-				var rows = document.querySelectorAll("table");
+				var rows = document.querySelectorAll("table tr");
 
 				for(var i = 0; i < rows.length; i++) {
 					var row = [], cols = rows[i].querySelectorAll("td, th");
@@ -217,5 +236,28 @@
 			}
 
 		</script>
+		<?php
+			require_once "connect.php";
+
+			$polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
+
+			if ($polaczenie->connect_errno!=0) {
+				echo "Error: ".$polaczenie->connect_errno;
+			} else {
+				$sql = "SELECT * FROM wplaty2";
+
+				if ($result = @$polaczenie->query($sql)) {
+					while($row = $result->fetch_assoc()) {
+						echo '<script type="text/javascript">',
+							'addHTMLTableRowPhp(\'',$row['data'],'\',\'',$row['na_co'],'\',\'',$row['kto'],'\',',$row['ile'],');',
+							'</script>'
+						;
+					}
+					$result_free();
+				}
+			}
+
+			$polaczenie->close();
+		?>
 	</body>
 </html>

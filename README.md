@@ -8,3 +8,16 @@ you need to do few things to make it work:
 
 TODO remove 2nd point of this instruction ;)
 
+Required database format:
+
+mysql> SHOW COLUMNS FROM wplaty2;
++-------+------------------+------+-----+---------+----------------+
+| Field | Type             | Null | Key | Default | Extra          |
++-------+------------------+------+-----+---------+----------------+
+| id    | int(11) unsigned | NO   | PRI | NULL    | auto_increment |
+| data  | date             | YES  |     | NULL    |                |
+| na_co | varchar(150)     | YES  |     | NULL    |                |
+| kto   | varchar(30)      | YES  |     | NULL    |                |
+| ile   | float(10,2)      | YES  |     | NULL    |                |
++-------+------------------+------+-----+---------+----------------+
+

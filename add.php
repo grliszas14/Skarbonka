@@ -2,10 +2,13 @@
 	session_start();
 
 if($_POST["add"]) {
+	
+	// Connect to MySQL database
 	require_once "connect.php";
+	$polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
 
-    $polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
-
+	// Check if connection is successful and
+	// insert new record in the database
 	if ($polaczenie->connect_errno!=0) {
 		echo "Error: ".$polaczenie->connect_errno;
 	} else {
@@ -26,10 +29,12 @@ if($_POST["add"]) {
 
 if($_POST["edit"]){
 
+	// Connect to MySQL database
 	require_once "connect.php";
-
     $polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
 
+	// Check if connection is successful and
+	// get the proper row from database
 	if ($polaczenie->connect_errno!=0) {
 		echo "Error: ".$polaczenie->connect_errno;
 	} else {
@@ -47,6 +52,7 @@ if($_POST["edit"]){
 			$_SESSION['id_rekordu'] = $rekord['id'];
 			$polaczenie->close();
 			if($ile_odp == 1){
+				// Display edit panel 
 				echo '<form action="edit.php" method="post">',
 					'Aktualne dane:<br><br>',
 					'Data (yyyy-mm-dd):<br><input type="text" name="fdate" id="fdate" value="',$data,'" disabled><br>',
@@ -56,7 +62,24 @@ if($_POST["edit"]){
 					'Nowe dane:<br><br>',
 					'Data (yyyy-mm-dd):<br><input type="text" name="fdate2" id="fdate2" value="',$data,'"><br>',
 					'Na co : <br><input type="text" name="fitem2" id="fitem2" value="',$na_co,'"><br>',
-					'Kto :<br><input type="text" name="fwho2" id="fwho2" value="',$kto,'"><br>',
+					'Kto : <br><select name="fwho2" id="fwho2">',
+							'<option value="qui">qui</option>',
+							'<option value="mglinka">mglinka</option>',
+							'<option value="pciechomski">pciechomski</option>',
+							'<option value="lucek">lucek</option>',
+							'<option value="kuban">kuban</option>',
+							'<option value="gwojciech">gwojciech</option>',
+							'<option value="match">match</option>',
+							'<option value="jc">jc</option>',
+							'<option value="abarcz">abarcz</option>',
+							'<option value="mmorusiewicz">mmorusiewicz</option>',
+							'<option value="spychy">spychy</option>',
+							'<option value="michalch">michalch</option>',
+							'<option value="marta">marta</option>',
+						'</select><br>',
+						'<script type="text/javascript">',
+						'document.getElementById("fwho2").value = "',$kto,'";',
+						'</script>',
 					'Ile : <br><input type="text" name="fhowmuch2" id="fhowmuch2" value="',$ile,'"><br>',
 
 

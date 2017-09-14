@@ -1,10 +1,12 @@
 <?php
 	session_start();
 
+	// Connect to MySQL database
 	require_once "connect.php";
-
 	$polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
 
+	// Check if connection is successful and
+	// edit row
 	if ($polaczenie->connect_errno!=0) {
 		echo "Error: ".$polaczenie->connect_errno;
 	} else {
@@ -21,6 +23,5 @@
 
 		header('Location: index.php');
 		$polaczenie->close();
-
 	}
 ?>

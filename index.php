@@ -7,25 +7,58 @@
 		<script src="js/scripts.js"></script>
 
 		<style>
-			.container{overflow: hidden}
-			.tab{float: left; margin-left: 100px}
-			.tab-2{float: right; margin-left: 50px; margin-right: 50px; position: fixed; right: 50px}
-			.tab-2 input{display: block; margin-bottom: 20px}
-			tr{transition:all .25s ease-in-out}
-			tr:hover{background-color: #a1a0a3; cursor: pointer}
-			.header img{display: block; margin-left: auto; margin-right: auto; margin-bottom: 50px; width: 500px}
-			.sum {float: left; margin-left: 50px; position: fixed; right: 450px}
-			.selected {background-color: #ff7178;}
+			.container {
+				overflow: hidden
+				}
+			.tab {
+				float: left; 
+				margin-left: 50px
+				}
+			.tab-2 {
+				float: right; 
+				margin-left: 50px; 
+				margin-right: 50px; 
+				position: fixed; 
+				right: 50px
+				}
+			.tab-2 input {
+				display: block; 
+				margin-bottom: 20px
+				}
+				tr {
+				transition:all .25s ease-in-out
+				}
+				tr:hover {
+				background-color: #a1a0a3; 
+				cursor: pointer
+				}
+			.header img {
+				display: block; 
+				margin-left: auto; 
+				margin-right: auto; 
+				margin-bottom: 50px; 
+				width: 500px
+				}
+			.sum {
+				float: left; 
+				margin-left: 50px; 
+				position: fixed; 
+				right: 400px
+				}
+			.selected {
+				background-color: #ff7178;
+				}
 		</style>
-
 	</head>
 	<body>
 
+		<!-- Logo -->
 		<div class="header">
 			<img src="public/images/skarbonka.png" />
 		</div>
 
 		<div class="container">
+			<!-- Table header -->
 			<div class="tab tab-1">
 				<table id="table" border="1">
 					<tr>
@@ -37,34 +70,75 @@
 				</table>
 			</div>
 
+			<!-- Balance -->
 			<div class="sum">
 				<h2>Stan skarbonki: </h2>
 				<span id="moneyBoxCondition">0 zł</span>
+				<br><br><br><h3>Dodawanie:</h3>
+				Wpisz dane w formularzu po<br>
+				prawej stronie i kliknij "Dodaj"<br>
+				<h3>Edycja:</h3>
+				Zaznacz wybrany rekord tak, aby<br>
+				podświetlił się na różowo, a<br>
+				następnie klinij "Edytuj"
 			</div>
 
-
+			<!-- Form on the right side -->
 			<div class="tab tab-2">
 				<form action="add.php" method="post">
 					Data (yyyy-mm-dd):<input type="text" name="fdate" id="fdate">
 					Na co : <input type="text" name="fitem" id="fitem">
-					Kto :<input type="text" name="fwho" id="fwho">
-					Ile : <input type="text" name="fhowmuch" id="fhowmuch">
+					Kto : <select name="fwho" id="fwho">
+							<!-- WRITE NEW EMPLOYEE HERE/ also in add.php -->
+							<option value="qui">qui</option>
+							<option value="mglinka">mglinka</option>
+							<option value="pciechomski">pciechomski</option>
+							<option value="lucek">lucek</option>
+							<option value="kuban">kuban</option>
+							<option value="gwojciech">gwojciech</option>
+							<option value="match">match</option>
+							<option value="jc">jc</option>
+							<option value="abarcz">abarcz</option>
+							<option value="mmorusiewicz">mmorusiewicz</option>
+							<option value="spychy">spychy</option>
+							<option value="michalch">michalch</option>
+							<option value="marta">marta</option>
+						</select><br><br>	
+					Ile (xx.xx): <input type="text" name="fhowmuch" id="fhowmuch">
 
 					<input onclick="addHTMLTableRow();" type="submit" value="Dodaj" name="add"/>
 					<input onclick="editHTMLTableSelectedRow()" type="submit" value="Edytuj" name="edit"/>
-					<!--
-					<input onclick="removeSelectedRow()" type="submit" value="Usuń"/>
-					-->
+					<!-- deleting records not working now
+					<input onclick="removeSelectedRow()" type="submit" value="Usuń"/> -->
 				</form>
 			</div>
 
 		</div>
 
 		<script>
-			var rIndex,
-				table = document.getElementById("table");
+			var rIndex,											// table row index
+				table = document.getElementById("table");		// main table with records
 
-			// check the empty input
+			function defaultTodaysDateInInput() {
+				var today = new Date();
+				var dd = today.getDate();
+				var mm = today.getMonth()+1; 					// January is 0!
+				var yyyy = today.getFullYear();
+
+				if(dd<10) {
+					dd = '0' + dd;
+				}
+
+				if(mm<10) {
+					mm = '0' + mm;
+				}
+
+				today = yyyy + '-' + mm + '-' + dd;
+				document.getElementById("fdate").value = today;
+			}
+			defaultTodaysDateInInput();
+
+			// check the empty input in form
 			function checkEmptyInput() {
 				var isEmpty = false,
 					fdate = document.getElementById("fdate").value,
@@ -137,7 +211,8 @@
 					selectedRowToInput();
 					calculateActualMoneyBoxState();
 			}
-			// display selected row data into input text
+
+			// display selected row data into form
 			function selectedRowToInput() {
 
 				for (var i = 1; i < table.rows.length; i++) {
@@ -158,7 +233,6 @@
 
 					};
 				}
-				//exportTableToCSV('092017.csv');
 			}
 			selectedRowToInput();
 
@@ -178,8 +252,9 @@
 			}
 
 			function removeSelectedRow() {
-				table.deleteRow(rIndex);
 				// clear input text
+				table.deleteRow(rIndex);
+				
 				document.getElementById("fdate").value = "";
 				document.getElementById("fitem").value = "";
 				document.getElementById("fwho").value = "";
@@ -198,9 +273,10 @@
 				sumVar = sumVar.toFixed(2);
 				document.getElementById("moneyBoxCondition").innerHTML = sumVar+" zł";
 			}
-
 			calculateActualMoneyBoxState();
 
+			// TEMPORARILY UNUSED
+			// the next 2 functions are for downloading CSV file from the table
 			function downloadCSV(csv, filename) {
 				var csvFile;
 				var downloadLink;
@@ -232,19 +308,20 @@
 
 				// download CSV file
 				downloadCSV(csv.join("\n"), filename);
-
 			}
 
 		</script>
 		<?php
+			// Connect to MySQL database
 			require_once "connect.php";
-
 			$polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
 
+			// Check if connection is successful and
+			// select records to display on the screen
 			if ($polaczenie->connect_errno!=0) {
 				echo "Error: ".$polaczenie->connect_errno;
 			} else {
-				$sql = "SELECT * FROM wplaty2";
+				$sql = "SELECT * FROM wplaty2 ORDER BY data";
 
 				if ($result = @$polaczenie->query($sql)) {
 					while($row = $result->fetch_assoc()) {

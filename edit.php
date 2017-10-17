@@ -15,9 +15,17 @@
 		$na_co_new = $_POST['fitem2'];
 		$kto_new = $_POST['fwho2'];
 		$ile_new = $_POST['fhowmuch2'];
+		$wyplata_new = $_POST['wyplata'];
 
-		$sql = "UPDATE wplaty2 SET data='$data_new', na_co='$na_co_new', kto='$kto_new', ile='$ile_new'
-			WHERE id='$id_rekordu'";
+		if($wyplata_new == "wplata") {
+			$sql = "UPDATE wplaty SET data='$data_new', na_co='$na_co_new', kto='$kto_new', ile='$ile_new'
+				WHERE id='$id_rekordu'";
+		} elseif($wyplata_new == "wyplata") {
+			$ile_new = -$ile_new;
+			$sql = "UPDATE wplaty SET data='$data_new', na_co='$na_co_new', kto='$kto_new', ile='$ile_new'
+				WHERE id='$id_rekordu'";
+			$ile_new = -$ile_new;
+		}
 
 		@$polaczenie->query($sql);
 

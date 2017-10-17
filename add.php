@@ -16,9 +16,17 @@ if($_POST["add"]) {
 		$na_co = $_POST['fitem'];
 		$kto = $_POST['fwho'];
 		$ile = $_POST['fhowmuch'];
+		$wyplata = $_POST['wyplata'];
 
-		$sql = "INSERT INTO wplaty2 (data, na_co, kto, ile)
-			VALUES('$data', '$na_co', '$kto', '$ile')";
+		if($wyplata == "wplata") {
+			$sql = "INSERT INTO wplaty (data, na_co, kto, ile)
+				VALUES('$data', '$na_co', '$kto', '$ile')";
+		} elseif ($wyplata == "wyplata") {
+			$ile = -$ile;
+			$sql = "INSERT INTO wplaty (data, na_co, kto, ile)
+				VALUES('$data', '$na_co', '$kto', '$ile')";
+
+		}
 
 		@$polaczenie->query($sql);
 		header('Location: index.php');
@@ -42,9 +50,18 @@ if($_POST["edit"]){
 		$na_co = $_POST['fitem'];
 		$kto = $_POST['fwho'];
 		$ile = $_POST['fhowmuch'];
+		$wyplata = $_POST['wyplata'];
 
-		$sql = "SELECT * FROM wplaty2 WHERE data='$data' AND na_co='$na_co'
-			AND kto='$kto' AND ile='$ile'";
+		// Conversion needed to find in database
+		if($wyplata == "wplata") {
+			$sql = "SELECT * FROM wplaty WHERE data='$data' AND na_co='$na_co'
+				AND kto='$kto' AND ile='$ile'";
+		} elseif($wyplata == "wyplata"){
+			$ile = -$ile;
+			$sql = "SELECT * FROM wplaty WHERE data='$data' AND na_co='$na_co'
+				AND kto='$kto' AND ile='$ile'";
+		}
+
 
 		if($result = @$polaczenie->query($sql)) {
 			$ile_odp = $result->num_rows;
@@ -57,7 +74,8 @@ if($_POST["edit"]){
 					'Aktualne dane:<br><br>',
 					'Data (yyyy-mm-dd):<br><input type="text" name="fdate" id="fdate" value="',$data,'" disabled><br>',
 					'Na co : <br><input type="text" name="fitem" id="fitem" value="',$na_co,'" disabled><br>',
-					'Kto :<br><input type="text" name="fwho" id="fwho" value="',$kto,'" disabled><br>',
+					'Kto :<br><input type="text" name="fwho" id="fwho" value="',$kto,'" disabled><br><br>',
+					'Działanie: ',$wyplata,'<br><br>',
 					'Ile : <br><input type="text" name="fhowmuch" id="fhowmuch" value="',$ile,'" disabled><br><br><br>',
 					'Nowe dane:<br><br>',
 					'Data (yyyy-mm-dd):<br><input type="text" name="fdate2" id="fdate2" value="',$data,'"><br>',
@@ -80,8 +98,18 @@ if($_POST["edit"]){
 						'<script type="text/javascript">',
 						'document.getElementById("fwho2").value = "',$kto,'";',
 						'</script>',
+					'<input type="radio" id="wyplata" name="wyplata" value="wyplata">Wypłata</input>',
+					'<input type="radio" id="wplata" name="wyplata" value="wplata">Wpłata</input><br>',
 					'Ile : <br><input type="text" name="fhowmuch2" id="fhowmuch2" value="',$ile,'"><br>',
-
+					'<script type="text/javascript">',
+					'if("',$wyplata,'" === "wplata") {',
+						'document.getElementById("wplata").checked = true;',
+					'} else {',
+						'document.getElementById("wyplata").checked = true;',
+						'document.getElementById("fhowmuch").value =',-$ile,';',
+						'document.getElementById("fhowmuch2").value =',-$ile,';',
+					'}',
+					'</script>',
 
 					'<br><input type="submit" value="Edytuj" name="edit_second"/>',
 					'</form>';

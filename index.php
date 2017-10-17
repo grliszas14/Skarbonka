@@ -3,8 +3,6 @@
 	<head>
 		<title>Skarbonka Newterm</title>
 		<meta charset="utf-8" />
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-		<script src="js/scripts.js"></script>
 
 		<style>
 			.container {
@@ -47,6 +45,12 @@
 				}
 			.selected {
 				background-color: #ff7178;
+				}
+			.buttons input {
+				display: inline;
+				}
+			.radiobuttons input {
+				display: inline;
 				}
 		</style>
 	</head>
@@ -104,12 +108,19 @@
 							<option value="michalch">michalch</option>
 							<option value="marta">marta</option>
 						</select><br><br>	
-					Ile (xx.xx): <input type="text" name="fhowmuch" id="fhowmuch">
+					Ile (xx.xx bez znaku!): <input type="text" name="fhowmuch" id="fhowmuch">
 
-					<input onclick="addHTMLTableRow();" type="submit" value="Dodaj" name="add"/>
-					<input onclick="editHTMLTableSelectedRow()" type="submit" value="Edytuj" name="edit"/>
-					<!-- deleting records not working now
-					<input onclick="removeSelectedRow()" type="submit" value="Usuń"/> -->
+					<div class="radiobuttons">
+						<input type="radio" id="wyplata" name="wyplata" value="wyplata" checked="checked">Wypłata</input>
+						<input type="radio" id="wplata" name="wyplata" value="wplata">Wpłata</input>
+					</div>
+
+					<div class="buttons">
+						<input onclick="addHTMLTableRow();" type="submit" value="Dodaj" name="add"/>
+						<input onclick="editHTMLTableSelectedRow()" type="submit" value="Edytuj" name="edit"/>
+						<!-- deleting records not working now
+						<input onclick="removeSelectedRow()" type="submit" value="Usuń"/> -->
+					</div>
 				</form>
 			</div>
 
@@ -227,7 +238,16 @@
 						document.getElementById("fdate").value = this.cells[0].innerHTML;
 						document.getElementById("fitem").value = this.cells[1].innerHTML;
 						document.getElementById("fwho").value = this.cells[2].innerHTML;
-						document.getElementById("fhowmuch").value = this.cells[3].innerHTML;
+						
+						checkSign = this.cells[3].innerHTML;
+						if(checkSign >= 0){
+							document.getElementById("fhowmuch").value = checkSign;
+							document.getElementById("wplata").checked = true;
+						} else {
+							document.getElementById("fhowmuch").value = -checkSign;
+							document.getElementById("wyplata").checked = true;
+						}
+							
 
 						this.classList.toggle("selected");
 
@@ -321,7 +341,7 @@
 			if ($polaczenie->connect_errno!=0) {
 				echo "Error: ".$polaczenie->connect_errno;
 			} else {
-				$sql = "SELECT * FROM wplaty2 ORDER BY data";
+				$sql = "SELECT * FROM wplaty ORDER BY data";
 
 				if ($result = @$polaczenie->query($sql)) {
 					while($row = $result->fetch_assoc()) {

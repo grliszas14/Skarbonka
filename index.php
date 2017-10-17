@@ -341,7 +341,7 @@
 			if ($polaczenie->connect_errno!=0) {
 				echo "Error: ".$polaczenie->connect_errno;
 			} else {
-				$sql = "SELECT * FROM wplaty ORDER BY data";
+				$sql = "SELECT * FROM wplaty ORDER BY data DESC";
 
 				if ($result = @$polaczenie->query($sql)) {
 					while($row = $result->fetch_assoc()) {

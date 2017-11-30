@@ -350,7 +350,7 @@
 							'</script>'
 						;
 					}
-					$result_free();
+					$result->free_result();
 				}
 			}
 

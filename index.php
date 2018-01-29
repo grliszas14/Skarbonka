@@ -43,6 +43,12 @@
 				position: fixed; 
 				right: 400px
 				}
+			.leakage {
+				background-color: #ff0000;
+				}
+			.bonus {
+				background-color: #00ff00;
+				}
 			.selected {
 				background-color: #ff7178;
 				}
@@ -217,6 +223,12 @@
 					cellItem.innerHTML = fitem;
 					cellWho.innerHTML = fwho;
 					cellHowMuch.innerHTML = fhowmuch;
+
+					if (na_co.match(/manko/i)) {
+						newRow.classList.toggle("leakage");
+					} else if (na_co.match(/płata/i) || na_co.match(/plata/i)) {
+						newRow.classList.toggle("bonus");
+					}
 
 					// call the function to set the event to the new row
 					selectedRowToInput();

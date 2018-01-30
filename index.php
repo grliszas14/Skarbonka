@@ -344,6 +344,9 @@
 
 		</script>
 		<?php
+			//Get user logged in
+			$user = $_SERVER['PHP_AUTH_USER'];
+
 			// Connect to MySQL database
 			require_once "connect.php";
 			$polaczenie = @new mysqli($host, $db_user, $db_password, $db_name);
@@ -367,6 +370,10 @@
 			}
 
 			$polaczenie->close();
+			echo '<script type="text/javascript">',
+				'document.getElementById("fwho").value = \'',$user,'\';',
+				'</script>'
+				;
 		?>
 	</body>
 </html>

@@ -51,17 +51,10 @@ if($_POST["edit"]){
 		$kto = $_POST['fwho'];
 		$ile = $_POST['fhowmuch'];
 		$wyplata = $_POST['wyplata'];
+		$id = $_POST['fid'];
 
 		// Conversion needed to find in database
-		if($wyplata == "wplata") {
-			$sql = "SELECT * FROM wplaty WHERE data='$data' AND na_co='$na_co'
-				AND kto='$kto' AND ile='$ile'";
-		} elseif($wyplata == "wyplata"){
-			$ile = -$ile;
-			$sql = "SELECT * FROM wplaty WHERE data='$data' AND na_co='$na_co'
-				AND kto='$kto' AND ile='$ile'";
-		}
-
+		$sql = "SELECT * FROM wplaty WHERE id='$id'";
 
 		if($result = @$polaczenie->query($sql)) {
 			$ile_odp = $result->num_rows;
@@ -106,8 +99,8 @@ if($_POST["edit"]){
 						'document.getElementById("wplata").checked = true;',
 					'} else {',
 						'document.getElementById("wyplata").checked = true;',
-						'document.getElementById("fhowmuch").value =',-$ile,';',
-						'document.getElementById("fhowmuch2").value =',-$ile,';',
+						'document.getElementById("fhowmuch").value =',$ile,';',
+						'document.getElementById("fhowmuch2").value =',$ile,';',
 					'}',
 					'</script>',
 

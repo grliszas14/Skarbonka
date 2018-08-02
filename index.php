@@ -6,42 +6,46 @@
 
 		<style>
 			.container {
-				overflow: hidden
+				overflow: hidden;
 				}
 			.tab {
 				float: left; 
-				margin-left: 50px
+				margin-left: 50px;
+				}
+			th {
+			    	background-color: #205027;
+			    	color: white;
 				}
 			.tab-2 {
 				float: right; 
 				margin-left: 50px; 
 				margin-right: 50px; 
 				position: fixed; 
-				right: 50px
+				right: 50px;
 				}
 			.tab-2 input {
 				display: block; 
-				margin-bottom: 20px
+				margin-bottom: 20px;
 				}
 				tr {
-				transition:all .25s ease-in-out
+				transition:all .25s ease-in-out;
 				}
 				tr:hover {
 				background-color: #a1a0a3; 
-				cursor: pointer
+				cursor: pointer;
 				}
 			.header img {
 				display: block; 
 				margin-left: auto; 
 				margin-right: auto; 
 				margin-bottom: 50px; 
-				width: 500px
+				width: 500px;
 				}
 			.sum {
 				float: left; 
 				margin-left: 50px; 
 				position: fixed; 
-				right: 400px
+				right: 400px;
 				}
 			.leakage {
 				background-color: #ff0000;
@@ -57,6 +61,9 @@
 				}
 			.radiobuttons input {
 				display: inline;
+				}
+			.hidden {
+				display: none;
 				}
 		</style>
 	</head>
@@ -76,6 +83,7 @@
 						<th>Na co</th>
 						<th>Kto</th>
 						<th>Ile [zł]</th>
+						<th class="hidden">ID</th>
 					</tr>
 				</table>
 			</div>
@@ -115,7 +123,7 @@
 							<option value="marta">marta</option>
 						</select><br><br>	
 					Ile (xx.xx bez znaku!): <input type="text" name="fhowmuch" id="fhowmuch">
-
+					<input name="fid" id="fid" type="hidden">
 					<div class="radiobuttons">
 						<input type="radio" id="wyplata" name="wyplata" value="wyplata" checked="checked">Wypłata</input>
 						<input type="radio" id="wplata" name="wyplata" value="wplata">Wpłata</input>
@@ -192,15 +200,18 @@
 						cellItem = newRow.insertCell(1),
 						cellWho = newRow.insertCell(2),
 						cellHowMuch = newRow.insertCell(3),
+						cellID = newRow.insertCell(4),
 						fdate = document.getElementById("fdate").value,
 						fitem = document.getElementById("fitem").value,
 						fwho = document.getElementById("fwho").value,
 						fhowmuch = document.getElementById("fhowmuch").value;
+						fid = document.getElementById("fid").value;
 
 					cellDate.innerHTML = fdate;
 					cellItem.innerHTML = fitem;
 					cellWho.innerHTML = fwho;
 					cellHowMuch.innerHTML = fhowmuch;
+					cellID = fid;
 
 					// call the function to set the event to the new row
 					selectedRowToInput();
@@ -208,21 +219,25 @@
 				}
 			}
 
-			function addHTMLTableRowPhp(data, na_co, kto, ile) {
+			function addHTMLTableRowPhp(data, na_co, kto, ile, id) {
 					var	newRow = table.insertRow(table.length),
 						cellDate = newRow.insertCell(0),
 						cellItem = newRow.insertCell(1),
 						cellWho = newRow.insertCell(2),
 						cellHowMuch = newRow.insertCell(3),
+						cellID = newRow.insertCell(4),
 						fdate = data,
 						fitem = na_co,
 						fwho = kto,
 						fhowmuch = ile;
+						fid = id;
 
 					cellDate.innerHTML = fdate;
 					cellItem.innerHTML = fitem;
 					cellWho.innerHTML = fwho;
 					cellHowMuch.innerHTML = fhowmuch;
+					cellID.innerHTML = fid;
+					cellID.style.visibility = 'hidden';
 
 					if (na_co.match(/manko/i)) {
 						newRow.classList.toggle("leakage");
@@ -249,8 +264,7 @@
 						rIndex = this.rowIndex;
 						document.getElementById("fdate").value = this.cells[0].innerHTML;
 						document.getElementById("fitem").value = this.cells[1].innerHTML;
-						document.getElementById("fwho").value = this.cells[2].innerHTML;
-						
+						document.getElementById("fwho").value = this.cells[2].innerHTML;	
 						checkSign = this.cells[3].innerHTML;
 						if(checkSign >= 0){
 							document.getElementById("fhowmuch").value = checkSign;
@@ -259,6 +273,7 @@
 							document.getElementById("fhowmuch").value = -checkSign;
 							document.getElementById("wyplata").checked = true;
 						}
+						document.getElementById("fid").value = this.cells[4].innerHTML;
 							
 
 						this.classList.toggle("selected");
@@ -273,12 +288,14 @@
 					fitem = document.getElementById("fitem").value,
 					fwho = document.getElementById("fwho").value,
 					fhowmuch = document.getElementById("fhowmuch").value;
+					fid = document.getElementById("fid").value;
 
 				if (!checkEmptyInput()) {
 					table.rows[rIndex].cells[0].innerHTML = fdate;
 					table.rows[rIndex].cells[1].innerHTML = fitem;
 					table.rows[rIndex].cells[2].innerHTML = fwho;
 					table.rows[rIndex].cells[3].innerHTML = fhowmuch;
+					table.rows[rIndex].cells[4].innerHTML = fid;
 				}
 				calculateActualMoneyBoxState();
 			}
@@ -361,7 +378,7 @@
 				if ($result = @$polaczenie->query($sql)) {
 					while($row = $result->fetch_assoc()) {
 						echo '<script type="text/javascript">',
-							'addHTMLTableRowPhp(\'',$row['data'],'\',\'',$row['na_co'],'\',\'',$row['kto'],'\',',$row['ile'],');',
+							'addHTMLTableRowPhp(\'',$row['data'],'\',\'',$row['na_co'],'\',\'',$row['kto'],'\',',$row['ile'],',',$row['id'],');',
 							'</script>'
 						;
 					}

@@ -87,6 +87,7 @@ if($_POST["edit"]){
 							'<option value="spychy">spychy</option>',
 							'<option value="michalch">michalch</option>',
 							'<option value="marta">marta</option>',
+							'<option value="jlukomski">jlukomski</option>',
 						'</select><br>',
 						'<script type="text/javascript">',
 						'document.getElementById("fwho2").value = "',$kto,'";',

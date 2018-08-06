@@ -121,6 +121,7 @@
 							<option value="spychy">spychy</option>
 							<option value="michalch">michalch</option>
 							<option value="marta">marta</option>
+							<option value="jlukomski">jlukomski</option>
 						</select><br><br>	
 					Ile (xx.xx bez znaku!): <input type="text" name="fhowmuch" id="fhowmuch">
 					<input name="fid" id="fid" type="hidden">

@@ -136,6 +136,7 @@
 						<!-- deleting records not working now
 						<input onclick="removeSelectedRow()" type="submit" value="Usuń"/> -->
 					</div>
+					<input onclick="exportTableToCSV('skarbonka_dane.csv')" type="button" value="Eksportuj do CSV" name="extoCSV"/>
 				</form>
 			</div>
 

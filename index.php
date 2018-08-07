@@ -115,6 +115,7 @@
 							<option value="kuban">kuban</option>
 							<option value="gwojciech">gwojciech</option>
 							<option value="match">match</option>
+							<option value="bdrogosiewicz">bdrogosiewicz</option>
 							<option value="jc">jc</option>
 							<option value="abarcz">abarcz</option>
 							<option value="mmorusiewicz">mmorusiewicz</option>

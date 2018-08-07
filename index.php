@@ -242,7 +242,7 @@
 
 					if (na_co.match(/manko/i)) {
 						newRow.classList.toggle("leakage");
-					} else if (na_co.match(/płata/i) || na_co.match(/plata/i)) {
+					} else if (na_co.match(/wpłata/i) || na_co.match(/wplata/i)) {
 						newRow.classList.toggle("bonus");
 					}
 
